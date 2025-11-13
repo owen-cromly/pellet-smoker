@@ -19,7 +19,7 @@ y0  = eq.y0;                               % nominal Tc
 opts.method = 'place';
 poles_ctrl = [-0.01 -0.015 -0.02 -0.03];
 poles_obs  = [-0.25 -0.50];
-[K,Ki_vec,~] = design_gains(p, op, poles_ctrl, poles_obs, opts);
+[K,Ki_vec,L] = design_gains(p, op, poles_ctrl, poles_obs, opts);
 L           = observer_gain(p, op, poles_obs);
 Ki_p        = Ki_vec(1);                  % pellet-only integral gain
 

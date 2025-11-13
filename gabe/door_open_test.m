@@ -26,6 +26,13 @@ UP = zeros(nT,1); UF = zeros(nT,1);
 % CONTROLLER: simple 3-state pellet-only feedback +  integral
 % -------------------------------------------------------------------------
 
+% Controller (same as before)
+poles_ctrl = [5.1 3 5 6];
+poles_obs2 = [-0.2 -0.4];
+[K,Ki,~]   = design_gains(p, op, poles_ctrl, poles_obs2);
+L          = observer_gain(p, op, poles_obs2);
+Ki_p = Ki; if numel(Ki_p)>1, Ki_p = Ki_p(1); end
+
 Bp = B(:,1);                         % pellet input column (3x1)
 
 % *** These 3 poles NOW REALLY MATTER for door-open behavior ***

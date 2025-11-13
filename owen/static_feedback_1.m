@@ -22,9 +22,9 @@ k = [place(A2,B2,[-3.8+0.2i; -3.8-0.2i]),[0;0]];
 u_unsat = -k*(x_hat-setpoint);
 u = [max(0,min(10,u_unsat(1))); max(0,min(1,u_unsat(2)))];
 
-u_p_min = 0;
+u_p_min = 0.1;
 u_p_max = 10;
-u_f_min = 0;
+u_f_min = 0.1;
 u_f_max = 1;
 
 if u(1) < u_p_min

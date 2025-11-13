@@ -9,7 +9,7 @@ function [K,Ki,L] = design_gains(p, op, poles_ctrl, poles_obs, opts)
 
 [A,B,C,~] = smoker_lin(p, op);
 n      = size(A,1);        % 3
-p_out  = size(C,1);        % 1 (Tc)
+p_out  = size(C,1);        % 1  (Tc)
 
 %% ---------- Observer on [Tf,Tc] ----------
 A2 = A(1:2,1:2); 
@@ -27,7 +27,7 @@ catch
     % fallback Kalman-like design if place fails
     L2 = lqe(A2, eye(2), C2, eye(2), 1, 0);
 end
-L = [L2; 0];                          % 3x1, mp unobserved in A but tracked via up
+L = [L2; 0];                          % 3x1, mp tracked via up integral
 
 %% ---------- CONTROLLER DESIGN ----------
 use_place = (nargin>=5) && isfield(opts,'method') && strcmpi(opts.method,'place');
@@ -38,32 +38,34 @@ if use_place
     % =========================================================
     %
     % Augmented state: xa = [x; xI], where xI = ∫(r - Tc) dt.
+    % For design we use r = 0 => xIdot = -C x.
     % Dynamics:
     %   xdot  = A x + B u
-    %   xIdot = r - Cx   (for design, treat r = 0 => xIdot = -C x)
+    %   xIdot = -C x
     %
-    % We use pellet input only (first column of B) for placement.
+    % => Aaug = [A  0;
+    %            -C 0],   Bp_aug = [Bp; 0].
     %
     if isempty(poles_ctrl) || numel(poles_ctrl) ~= 4
         error('design_gains(place): poles_ctrl must have 4 entries for [x; xI].');
     end
 
-    Bp      = B(:,1);                 % 3x1 pellet input
-    Aaug    = [A,        -C';         % 4x4
-               zeros(1,n), 0];
-    Bp_aug  = [Bp; 0];                % 4x1
+    Bp     = B(:,1);                     % 3x1 pellet input
+    Aaug   = [A, zeros(3,1);             % 4x4
+              -C, 0];
+    Bp_aug = [Bp; 0];                    % 4x1
 
     % Check controllability of (Aaug,Bp_aug)
     if rank(ctrb(Aaug,Bp_aug)) < 4
         warning('design_gains(place): (Aaug,Bp_aug) not fully controllable; using LQI fallback instead.');
-        use_place = false;            % drop to LQI below
+        use_place = false;               % drop to LQI below
     else
         % 1x4 gain for pellet channel
         Kp_aug = place(Aaug, Bp_aug, poles_ctrl);   % 1x4
 
         % Map to 2-input [K;Ki]:
         % - First row: pellet gains from place
-        % - Second row (fan): zero for simplicity (fan shaped elsewhere)
+        % - Second row (fan): zero for simplicity (fan logic handled elsewhere)
         K  = [Kp_aug(1:3); zeros(1,3)];   % 2x3
         Ki = [Kp_aug(4);   0];            % 2x1 (integral acts on pellets only)
         return;
@@ -71,7 +73,7 @@ if use_place
 end
 
 % =========================================================
-% OPTION 2 (default): LQI on [x; xI] as in your original code
+% OPTION 2 (default): LQI on [x; xI]  (your original code)
 % =========================================================
 if nargin>=5 && isfield(opts,'Q')
     Q = opts.Q;

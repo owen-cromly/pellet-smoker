@@ -12,7 +12,7 @@ arguments (Output)
     x_hat_d % estimated state
 end
 
-A2 = lin.A(1:2,1:2); % linearized at an arbitrary point
+A2 = lin.A(1:2,1:2);
 L = [place(A2, [0;1], [-3.1 -2.9])'; 0]; % arbitrary poles
 
 %C = [0 1 0];
