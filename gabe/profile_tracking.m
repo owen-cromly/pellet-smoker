@@ -1,7 +1,14 @@
-function profile_tracking()
+function profile_tracking(start_at_ambient)
 % 2.7.5 — Profile tracking (nonlinear plant; pellet-only control, clean spec version)
+%
+% If start_at_ambient == true, we start from T_f = T_c = T_amb (cold smoker).
+% Otherwise, we start from the equilibrium eq.xe (~110 °C), i.e. a preheated smoker.
 
-[p,op] = smoker_params();                 % your helper that returns the §2.6 numbers
+if nargin < 1
+    start_at_ambient = false;   % default: preheated (matches linearization)
+end
+
+[p,op] = smoker_params();                 % helper that returns the §2.6 numbers
 [A,B,C,~] = smoker_lin(p, op);            % must match §2.6 linearization in your write-up
 eq  = smoker_eq(p, op);
 u0  = eq.ue;                               % [up0; uf0]  ~ [0.4; 0.6] per §2.6
@@ -24,17 +31,28 @@ TT      = (0:dt:T)';
 nT      = numel(TT);
 
 tau_ref = 50;                % gentle reference prefilter (1st order)
-du_max  = 0.0075;             % pellet slew per step (keeps things smooth)
-up_min  = 0.12;               % avoid extinguishing fire; not below physical min
-up_max  = 1.00;               % reasonable cap
-uf_fix  = u0(2);              % keep fan constant for the main spec run
+du_max  = 0.0075;            % pellet slew per step (keeps things smooth)
+up_min  = 0.12;              % avoid extinguishing fire; not below physical min
+up_max  = 1.00;              % reasonable cap
+uf_fix  = u0(2);             % keep fan constant for the main spec run
 
 % --- STATE / LOGS ---
-xabs = eq.xe;                 % nonlinear plant absolute state
-zhat = zeros(3,1);            % observer state (deviation coords)
+
+if start_at_ambient
+    % Cold-start scenario: smoker at ambient, hopper mass as in eq.xe
+    % (If your params struct names ambient differently, adjust p.Tamb.)
+    Tamb = p.Tamb;           % or 25 if you want to hard-code °C
+    xabs = [Tamb; Tamb; eq.xe(3)];
+    r_f  = Tc_profile(0);    % start controller ref at first profile segment (90 °C)
+else
+    % Preheated smoker: start exactly at the nominal equilibrium
+    xabs = eq.xe;            % nonlinear plant absolute state
+    r_f  = y0;               % filtered reference starts at nominal Tc
+end
+
+zhat = zeros(3,1);           % observer state (deviation coords)
 xI   = 0;                     % scalar integrator on temperature error
 uabs = u0;                    % absolute inputs; we'll move pellets only
-r_f  = y0;                    % filtered reference
 
 Tc_tr = zeros(nT,1);
 UP    = zeros(nT,1);
@@ -51,7 +69,7 @@ for k = 1:nT
     r_set   = Tc_profile(t);     % 0-600:90, 600-1200:110, 1200-1800:130
     Rset(k) = r_set;
 
-    % Reference shaping (document as a standard prefilter)
+    % Reference shaping (standard prefilter)
     r_f     = r_f + dt*(r_set - r_f)/tau_ref;
     Rshp(k) = r_f;
 
@@ -98,7 +116,12 @@ pellets_used = MP(1) - MP(end);
 fig = figure(5); clf(fig); tiledlayout(fig,2,1)
 nexttile;
 plot(TT,Rset,'k:',TT,Rshp,'k--',TT,Tc_tr,'b-','LineWidth',1.1); grid on
-ylabel('T_c (^{\circ}C)'); title('Profile tracking (nonlinear plant)');
+ylabel('T_c (^{\circ}C)');
+if start_at_ambient
+    title('Profile tracking (nonlinear plant, cold start)')
+else
+    title('Profile tracking (nonlinear plant, preheated)')
+end
 legend('setpoint (boxy)','ref to controller (shaped)','T_c','Location','best')
 
 nexttile;

@@ -1,13 +1,28 @@
-function door_open_test()
+function door_open_test(start_at_ambient)
 % 2.7.3 — Nonlinear door-open disturbance (pellet bump avoided; fan steady)
+%
+% If start_at_ambient == true, we start from T_f = T_c = T_amb (cold smoker).
+% Otherwise, we start from the equilibrium eq.xe (~110 °C).
+
+if nargin < 1
+    start_at_ambient = false;   % default: preheated door-open test
+end
 
 [p,op] = smoker_params();
 [A,~,~,~] = smoker_lin(p, op);
 eq = smoker_eq(p, op);
 
-x  = eq.xe;                 % absolute state
-u  = eq.ue;                 % absolute inputs
-y0 = eq.y0;
+% --- initial conditions ---
+if start_at_ambient
+    % cold smoker
+    Tamb = p.Tamb;              % or 25 if hard-coded
+    x  = [Tamb; Tamb; eq.xe(3)];% same pellet mass, cold temps
+else
+    % preheated at nominal equilibrium
+    x  = eq.xe;
+end
+u  = eq.ue;                     % absolute inputs (start at nominal)
+y0 = eq.y0;                     % nominal Tc (we still regulate to this)
 
 % timings
 dt = 0.5; T = 300; TT = (0:dt:T)'; nT = numel(TT);
@@ -20,7 +35,7 @@ alpha_hi  = 1.6;
 Tc_hist = zeros(nT,1);
 UP = zeros(nT,1); UF = zeros(nT,1);
 
-% Controller
+% Controller (same as before)
 poles_ctrl = [-0.02 -0.03 -0.05 -0.06];
 poles_obs2 = [-0.2 -0.4];
 [K,Ki,~]   = design_gains(p, op, poles_ctrl, poles_obs2);
@@ -35,8 +50,10 @@ for k=1:nT
     t = TT(k);
 
     % door conductance scale (plant disturbance only)
-    if t>=t_on && t<=t_off, p_k=p; p_k.kca=alpha_hi*p.kca;
-    else,                   p_k=p; p_k.kca=alpha_nom*p.kca;
+    if t>=t_on && t<=t_off
+        p_k = p; p_k.kca = alpha_hi*p.kca;
+    else
+        p_k = p; p_k.kca = alpha_nom*p.kca;
     end
 
     % constant reference (hold nominal temp)
@@ -77,7 +94,12 @@ fig = figure(3); clf(fig); tiledlayout(fig,2,1);
 nexttile;
 plot(TT,Tc_hist,'LineWidth',1.2); grid on; hold on
 xline(t_on,'--k','Door open'); xline(t_off,'--k','Door shut');
-ylabel('T_c (^{\circ}C)'); title('Door-open disturbance rejection');
+ylabel('T_c (^{\circ}C)');
+if start_at_ambient
+    title('Door-open disturbance rejection (cold start)')
+else
+    title('Door-open disturbance rejection (preheated)')
+end
 
 nexttile;
 plot(TT,UP,'-','LineWidth',1.0); hold on
