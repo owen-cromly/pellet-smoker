@@ -15,9 +15,11 @@ u0  = eq.ue;                               % [up0; uf0]  ~ [0.4; 0.6] per §2.6
 y0  = eq.y0;                               % nominal Tc
 
 % Mild state-feedback + observer (designed on §2.6 matrices)
-poles_ctrl = [-0.02 -0.03 -0.05 -0.06];   % gentle, well-damped
+
+opts.method = 'place';
+poles_ctrl = [-0.01 -0.015 -0.02 -0.03];
 poles_obs  = [-0.25 -0.50];
-[K,Ki_vec,~] = design_gains(p, op, poles_ctrl, poles_obs);
+[K,Ki_vec,~] = design_gains(p, op, poles_ctrl, poles_obs, opts);
 L           = observer_gain(p, op, poles_obs);
 Ki_p        = Ki_vec(1);                  % pellet-only integral gain
 
