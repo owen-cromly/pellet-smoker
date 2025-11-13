@@ -23,7 +23,7 @@ T       = 1800;
 TT      = (0:dt:T)'; 
 nT      = numel(TT);
 
-tau_ref = 10;                % gentle reference prefilter (1st order)
+tau_ref = 50;                % gentle reference prefilter (1st order)
 du_max  = 0.0075;             % pellet slew per step (keeps things smooth)
 up_min  = 0.12;               % avoid extinguishing fire; not below physical min
 up_max  = 1.00;               % reasonable cap
