@@ -20,7 +20,7 @@ function xd = nonlinear_model(t, x, u)
     p.T_amb = 25;
 
     if t > 40 && t < 50
-        p.k_ca = 25*2.5;
+        p.k_ca = 25*1.5;
     end
 
     xd = nonlinear_core(p, x, u);
