@@ -1,10 +1,16 @@
-% our first feedback design, which takes observer feedback
+% our second feedback design, which takes observer feedback
+% x = [
+%      T_f          ;T_c          ;m_p    ;   
+%      T_f_hat      ;T_c_hat      ;m_p_hat/0    ;
+%      T_f_hat_int  ;T_c_hat_int  ;m_p_hat_int    ;
+% ]
 
-function u = static_feedback_1(x_hat,setpoint,lin)
+function u = static_feedback_2(x_hat,x_hat_int, setpoint,lin)
 %STATIC FEEDBACK Summary of this function goes here
 %   Detailed explanation goes here
 arguments (Input)
     x_hat % the observer state estimation value
+    x_hat_int % the integral of x_hat error
     setpoint % the setpoint for x
     lin % the linearizes system, as a struct
 end

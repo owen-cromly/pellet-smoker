@@ -1,8 +1,8 @@
-function xd = nonlinear_model(t, x, u)
+function xd = nonlinear_model(door_open, x, u)
     %NONLINEAR_MODEL Wrapper function for the nonlinear model
     %   Detailed explanation goes here
     arguments (Input)
-        t % time, used for injecting inputs and such
+        door_open % is the door open?
         x
         u
     end
@@ -29,7 +29,7 @@ function xd = nonlinear_model(t, x, u)
         p.T_amb = 25*(random('Normal',1,0.05));
     end
 
-    if t > 10 && t < 20
+    if door_open
         p.k_ca = 25*1.5;
     end
 

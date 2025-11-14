@@ -1,5 +1,5 @@
-function x_hat_d = static_observer(y,x_hat,u,lin)
-%STATIC OBSERVER 
+function x_hat_d = basic_observer(y,x_hat,u,lin)
+%BASIC OBSERVER 
 %   Detailed explanation goes here
 arguments (Input)
     y % T_C
