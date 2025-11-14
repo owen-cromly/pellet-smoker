@@ -36,7 +36,7 @@ Tc_hist = zeros(nT,1);
 UP = zeros(nT,1); UF = zeros(nT,1);
 
 % Controller (same as before)
-poles_ctrl = [-0.02 -0.03 -0.05 -0.06];
+poles_ctrl = [5.1 3 5 6];
 poles_obs2 = [-0.2 -0.4];
 [K,Ki,~]   = design_gains(p, op, poles_ctrl, poles_obs2);
 L          = observer_gain(p, op, poles_obs2);

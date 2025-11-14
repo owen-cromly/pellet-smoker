@@ -1,4 +1,4 @@
-4function integral_step()
+function integral_step()
 % 2.7.2 — Integral action step tracking (linear model around (x0,u0))
 
 [p,op] = smoker_params();

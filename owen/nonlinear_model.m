@@ -19,7 +19,17 @@ function xd = nonlinear_model(t, x, u)
     p.gamma = 1000;
     p.T_amb = 25;
 
-    if t > 140 && t < 150
+    if false
+        p.C_f = 500*(random('Normal',1,0.05));
+        p.k_f = 150*(random('Normal',1,0.05));
+        p.k_ca = 25*(random('Normal',1,0.05));
+        p.C_c = 2500*(random('Normal',1,0.05));
+        p.k_fa = 20*(random('Normal',1,0.05));
+        p.gamma = 1000*(random('Normal',1,0.05));
+        p.T_amb = 25*(random('Normal',1,0.05));
+    end
+
+    if t > 10 && t < 20
         p.k_ca = 25*1.5;
     end
 
