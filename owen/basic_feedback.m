@@ -1,6 +1,6 @@
 % our first feedback design, which takes observer feedback
 
-function u = static_feedback_1(x_hat,setpoint,lin)
+function u = basic_feedback(x_hat,setpoint,lin)
 %STATIC FEEDBACK Summary of this function goes here
 %   Detailed explanation goes here
 arguments (Input)
@@ -20,7 +20,7 @@ B2 = lin.B(1:2,1:2);
 k = [place(A2,B2,[-3.8+0.2i; -3.8-0.2i]),[0;0]];
 
 u_p_min = 0.1;
-u_p_max = 10;
+u_p_max = 6;
 u_f_min = 0.1;
 u_f_max = 1;
 
