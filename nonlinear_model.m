@@ -19,7 +19,7 @@ function xd = nonlinear_model(t, x, u)
     p.gamma = 1000;
     p.T_amb = 25;
 
-    if t > 40 && t < 50
+    if t > 140 && t < 150
         p.k_ca = 25*1.5;
     end
 
