@@ -19,8 +19,8 @@ end
 % x_dot_aug form
 % x_dot:                1:3
 % x_hat_dot:            4:6
-% integral_error_dot:   7:9
-% u_hat_dot:           10:11
+% integral_error_dot:   7:9 % actually just 7 (7 = T_c)
+% u_hat_dot:           10:11 % unused
 
 % DECOMPOSE augmented state into variables
 y = x(2);
