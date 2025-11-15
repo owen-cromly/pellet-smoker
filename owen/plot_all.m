@@ -54,6 +54,6 @@ function plot_all(t, result, u, scenario)
     xlim([0 200]);
 
     % --- Main title ---
-    sgtitle("Scenario: " + scenario, 'FontWeight', 'bold');
+    sgtitle(scenario, 'FontWeight', 'bold');
 
 end
