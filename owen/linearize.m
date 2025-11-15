@@ -36,7 +36,7 @@ lin.A = double(subs(A, [x_1 x_2 x_3 u_p u_f], [x(1) x(2) 0 u(1) u(2)]));
 B = jacobian(nonlinear_model(0, [x_1;x_2;x_3], [u_p; u_f]),[u_p;u_f]);
 lin.B = double(subs(B, [x_1 x_2 x_3 u_p u_f], [x(1) x(2) 0 u(1) u(2)]));
 lin.C = double([0 1 0]);
-lin.x = double(x);
+lin.x = [double(x); 0];
 
 
 A = jacobian(nonlinear_model(0, [x_1;x_2;x_3], [u_p; u_f]),[x_1;x_2;x_3]);

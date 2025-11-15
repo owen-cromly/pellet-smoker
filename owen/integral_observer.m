@@ -1,9 +1,9 @@
-function [x_hat_dot, integral_hat_dot] = basic_observer(x_hat, integral_hat, lin, setpoint, y, u)
-%BASIC OBSERVER 
+function [x_hat_dot, integral_hat_dot] = integral_observer(x_hat, integral_hat, lin, setpoint, y, u)
+% INTEGRAL OBSERVER 
 %   Detailed explanation goes here
 arguments (Input)
     x_hat % the present value of x_hat (solved by ode45)
-    integral_hat % the integral of the predicted x_hat v. setpoint error (UNUSED)
+    integral_hat % the integral of the predicted x_hat v. setpoint error
     lin % the linearized system, as a struct
     setpoint % the setpoint of the system (used for integrating setpoint error)
     y % T_C
@@ -23,6 +23,7 @@ L = [place(A2, [0;1], [-3.1 -2.9])'; 0]; % arbitrary poles
 
 x_hat_dot = lin.A*x_hat+lin.B*(u)+L*(y-x_hat(2));
 integral_hat_dot = y - setpoint(2);
+integral_hat_dot = integral_hat_dot - integral_hat*0.01;
 %x_hat_d(2) = y;
 
 end
