@@ -87,7 +87,7 @@ for k = 1:nT
         p_k = p; p_k.kca = alpha_nom * p.kca;
     end
 
-    % CLOSED-LOOP FEEDBACK CASE 
+    %CLOSED-LOOP FEEDBACK CASE ----------
     % Constant reference r = 110, shaped by first-order prefilter
     r_set   = T_target;
     r_f_fb  = r_f_fb + dt*(r_set - r_f_fb)/tau_ref;
