@@ -4,7 +4,7 @@
 eq = smoker_eq(p, op);  Tc0 = eq.y0; u0 = eq.ue;
 
 t  = (0:0.5:1800)';
-DU = 0.10;                            % 0.10 g/s step (physically small)
+DU = 5;                            % 0.10 g/s step (physically small)
 
 % linear (deviation) response
 Udev = [DU*ones(numel(t),1), zeros(numel(t),1)];

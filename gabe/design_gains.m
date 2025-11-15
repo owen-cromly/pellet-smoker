@@ -33,41 +33,25 @@ L = [L2; 0];                          % 3x1, mp tracked via up integral
 use_place = (nargin>=5) && isfield(opts,'method') && strcmpi(opts.method,'place');
 
 if use_place
-    % =========================================================
-    % OPTION 1: pellet-only pole placement on augmented [x; xI]
-    % =========================================================
-    %
-    % Augmented state: xa = [x; xI], where xI = ∫(r - Tc) dt.
-    % For design we use r = 0 => xIdot = -C x.
-    % Dynamics:
-    %   xdot  = A x + B u
-    %   xIdot = -C x
-    %
-    % => Aaug = [A  0;
-    %            -C 0],   Bp_aug = [Bp; 0].
-    %
+    % Augmented state xa = [x; xI], xIdot = -C x
+    Aaug = [A, zeros(3,1);
+            -C, 0];
+    Baug = [B; zeros(1,2)];           
+
     if isempty(poles_ctrl) || numel(poles_ctrl) ~= 4
         error('design_gains(place): poles_ctrl must have 4 entries for [x; xI].');
     end
 
-    Bp     = B(:,1);                     % 3x1 pellet input
-    Aaug   = [A, zeros(3,1);             % 4x4
-              -C, 0];
-    Bp_aug = [Bp; 0];                    % 4x1
-
-    % Check controllability of (Aaug,Bp_aug)
-    if rank(ctrb(Aaug,Bp_aug)) < 4
-        warning('design_gains(place): (Aaug,Bp_aug) not fully controllable; using LQI fallback instead.');
-        use_place = false;               % drop to LQI below
+    % Check controllability with BOTH inputs
+    if rank(ctrb(Aaug,Baug)) < 4
+        warning('design_gains(place): (Aaug,Baug) not fully controllable; using LQI fallback instead.');
     else
-        % 1x4 gain for pellet channel
-        Kp_aug = place(Aaug, Bp_aug, poles_ctrl);   % 1x4
+        % Multi-input pole placement: Kaug is 2x4
+        Kaug = place(Aaug, Baug, poles_ctrl);   % uses both pellets and fan
 
-        % Map to 2-input [K;Ki]:
-        % - First row: pellet gains from place
-        % - Second row (fan): zero for simplicity (fan logic handled elsewhere)
-        K  = [Kp_aug(1:3); zeros(1,3)];   % 2x3
-        Ki = [Kp_aug(4);   0];            % 2x1 (integral acts on pellets only)
+        % Map back:
+        K  = Kaug(:,1:3);   % 2x3 feedback on [Tf Tc mp]
+        Ki = Kaug(:,4);     % 2x1 integral gains for up and uf
         return;
     end
 end
