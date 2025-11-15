@@ -57,7 +57,7 @@ if use_place
 end
 
 % =========================================================
-% OPTION 2 (default): LQI on [x; xI]  (your original code)
+% OPTION 2 (default): LQI on [x; xI]
 % =========================================================
 if nargin>=5 && isfield(opts,'Q')
     Q = opts.Q;
