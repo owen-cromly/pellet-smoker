@@ -1,7 +1,7 @@
 function [K,Ki,L] = design_gains(p, op, poles_ctrl, poles_obs, opts)
 % DESIGN_GAINS  Controller + observer design for smoker case study.
 %   [K,Ki,L] = design_gains(p, op, poles_ctrl, poles_obs, opts)
-%   - Observer: reduced-order on [Tf,Tc] using "place" (or LQE fallback).
+%   - Observer: reduced-order on [Tf,Tc] using "place".
 %   - Controller:
 %       * Default: continuous-time LQI on [x; xI] (integral of Tc error).
 %       * Optional: pellet-only pole placement on augmented [x; xI]
@@ -11,7 +11,7 @@ function [K,Ki,L] = design_gains(p, op, poles_ctrl, poles_obs, opts)
 n      = size(A,1);        % 3
 p_out  = size(C,1);        % 1  (Tc)
 
-%% ---------- Observer on [Tf,Tc] ----------
+%% Observer on [Tf,Tc]
 A2 = A(1:2,1:2); 
 C2 = [0 1];                 % measure Tc
 

@@ -7,7 +7,7 @@ eq = smoker_eq(p, op);
 
 % Gains
 poles_ctrl = [-0.02 -0.03 -0.05 -0.06];   % mild, real
-poles_obs  = [-0.3 -0.5];                  % not used here but consistent
+poles_obs  = [-0.25 -0.5];                  % not used here but consistent
 [K,Ki,~] = design_gains(p, op, poles_ctrl, poles_obs);
 
 % DC gain from ref to inputs (use nonsingular 2x2 thermal block)

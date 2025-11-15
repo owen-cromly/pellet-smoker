@@ -12,9 +12,9 @@ function plot_all(t, result, u, scenario)
     plot(t, result(1,:), 'LineWidth', 1.2);
     title('T_f');
     grid on;
-    %yticks([50 90 130 170]);
+    %yticks([60 100 140 180]);
     %%%%xticks([600 1200 200]);
-    xlim([0 200]);
+    xlim([0 300]);
 
     % --- T_c ---
     subplot(2,2,2);
@@ -33,15 +33,15 @@ function plot_all(t, result, u, scenario)
     grid on;
     %%yticks([50 90 130]);
     %%%%xticks([600 1200 200]);
-    xlim([0 200]);
+    xlim([0 300]);
 
     % --- integral_hat ---
     subplot(2,2,3);
     plot(t, result(7,:), 'LineWidth', 1.2);
-    title('integral\_hat');
+    title('x_I');
     grid on;
     %%%%xticks([600 1200 200]);
-    xlim([0 200]);
+    xlim([0 300]);
 
     % --- Control inputs ---
     subplot(2,2,4);
@@ -51,9 +51,9 @@ function plot_all(t, result, u, scenario)
     legend('u_p','u_f');
     grid on;
     %%%%xticks([600 1200 200]);
-    xlim([0 200]);
+    xlim([0 300]);
 
     % --- Main title ---
-    sgtitle("Scenario: " + scenario, 'FontWeight', 'bold');
+    sgtitle("Disturbance Rejection", 'FontWeight', 'bold');
 
 end

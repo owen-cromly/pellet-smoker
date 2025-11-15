@@ -2,14 +2,14 @@ function xI = anti_windup(xI, e, dt, varargin)
 %ANTI_WINDUP  Conditional anti-windup for a *scalar* integrator xI.
 %
 % Supports two call styles:
-%   Legacy (5 args):  xI = anti_windup(xI, e, dt, du_des, uabs)
+%   Legacy:  xI = anti_windup(xI, e, dt, du_des, uabs)
 %     - du_des : desired change in input (vector or scalar)
 %     - uabs   : saturated/actual input after limits (vector or scalar)
 %     Behavior: freezes the integrator if any channel is saturated and the
 %     command is trying to push further into that saturation, *and* the
 %     error would reinforce that push.
 %
-%   New (8 args):    xI = anti_windup(xI, e, dt, u_unsat, u_sat, Ki, umin, umax)
+%   New:    xI = anti_windup(xI, e, dt, u_unsat, u_sat, Ki, umin, umax)
 %     - u_unsat : pre-saturation command (scalar for the integrator channel)
 %     - u_sat   : post-saturation command (same channel)
 %     - Ki      : integral gain used in u_int = -Ki*xI  (scalar)

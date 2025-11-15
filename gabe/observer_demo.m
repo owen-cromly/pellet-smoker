@@ -48,7 +48,7 @@ for k = 1:numel(TT)
     xabs = xabs + dt*smoker_nl(t, xabs, @(~)uabs, p);
     zhat = zhat + dt*(A*zhat + B*du_eff + L*(ydev - C*zhat));
 
-    % integral action on true error (as designed)
+    % integral action on true error
     xI = xI + dt*(r - y);
     xI = max(min(xI, 2000), -2000);
 
