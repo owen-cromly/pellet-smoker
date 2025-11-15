@@ -14,7 +14,7 @@ up0, uf0 = 0.4, 0.6
 Tf0, Tc0, mp0 = 31, 30, 0.0
 x_op = np.array([Tf0, Tc0, mp0])
 
-# 1) 선형 모델
+# 1) linear model
 A = np.array([
     [-(kf + kfa)/Cf,  kf/Cf,          0.0],
     [ kf/Cc,         -(kf + kca)/Cc,  0.0],
@@ -55,4 +55,8 @@ Tc_nl = sol_nl.y[1]
 
 plt.plot(t, Tc_lin, label='Linearized model')
 plt.plot(t, Tc_nl,  label='Nonlinear model', linestyle='--')
-plt.xlabel('Time'); plt.ylabel('Tc (°C)'); plt.grid(True); plt.legend(); plt.show()
+plt.xlabel('Time'); 
+plt.ylabel('Tc (°C)'); 
+plt.grid(True); 
+plt.legend(); 
+plt.show()
