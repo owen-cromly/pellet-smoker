@@ -1,4 +1,4 @@
-function plot_all(t, result, u, scenario)
+function plot_disturbance(t, result, u, scenario)
 %  PLOT_ALL  Plot key simulation outputs in a 2×2 grid.
 % ACKNOWLDEGEMENT: DRAFTED BY CHATGPT to save me a minute
     if nargin < 4
@@ -35,7 +35,7 @@ function plot_all(t, result, u, scenario)
     %%%%xticks([600 1200 200]);
     xlim([0 100]);
 
-    % --- integral_hat ---
+    % --- x_I ---
     subplot(2,2,3);
     plot(t, result(7,:), 'LineWidth', 1.2);
     title('x_i');

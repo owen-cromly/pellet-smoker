@@ -12,7 +12,7 @@ arguments (Output)
 end
 
 % saturate the output according to the parameters given
-max_sat = (unsat>max).*max + (unsat<max).*unsat;
-sat = (max_sat<min).*min + (max_sat>min).*max_sat;
+max_sat = (unsat>=max).*max + (unsat<max).*unsat;
+sat = (max_sat<=min).*min + (max_sat>min).*max_sat;
 
 end
