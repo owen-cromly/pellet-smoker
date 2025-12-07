@@ -1,5 +1,5 @@
 function robustness_mc(start_at_ambient)
-% 2.7.6 — Robustness Monte Carlo for FULL profile tracking
+% 2.7.6 — Robustness Monte Carlo profile tracking
 %
 % If start_at_ambient == true, each run starts at T_amb.
 % Otherwise, each run starts from the nominal equilibrium eq_nom.xe
@@ -53,7 +53,7 @@ settle = NaN(N,1);
 pellets= zeros(N,1);
 
 for i = 1:N
-    % ---- sample physical parameters (actual plant) ----
+    % ---- sample physical parameters 
     s     = @(v) v*(0.8 + 0.4*rand);   % ±20 %
     p_i   = p_nom;
     p_i.Cf  = s(p_nom.Cf);
@@ -93,7 +93,7 @@ for i = 1:N
         ydev = y - y0;                 % deviation from nominal
         e    = r_f - y;                % tracking error
 
-        % --- control law (same structure as profile_tracking) ---
+        % control law ---
         du_ff = Kref_nom*(r_f - y0);   % 2x1 feedforward (nominal)
         u_int = -Ki_p * xI;            % pellet integral contribution
         du_fb = -K*zhat + [u_int; 0];  % feedback + integral
@@ -129,7 +129,7 @@ for i = 1:N
         mp_log(k) = xabs(3);
     end
 
-    % ---------- metrics on the FINAL (130 °C) plateau ----------
+    % metrics on the FINAL plateau
     mask_final = TT >= 1200;
     T_final    = TT(mask_final);
     Tc_final   = Tc_log(mask_final);

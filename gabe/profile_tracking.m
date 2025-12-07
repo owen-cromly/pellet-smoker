@@ -1,11 +1,11 @@
 function profile_tracking(start_at_ambient)
-% 2.7.5 — Profile tracking (nonlinear plant; pellets + fan both move)
+% 2.7.5 — Profile tracking 
 %
 % If start_at_ambient == true, we start from T_f = T_c = T_amb (cold smoker).
 % Otherwise, we start from the equilibrium eq.xe (~110 °C), i.e. a preheated smoker.
 
 if nargin < 1
-    start_at_ambient = false;   % default: preheated (matches linearization)
+    start_at_ambient = false;   % default: preheated 
 end
 
 [p,op] = smoker_params();                 % params (Cf,Cc,kf,kfa,kca,beta,Tamb,...)
@@ -14,8 +14,8 @@ eq  = smoker_eq(p, op);
 u0  = eq.ue;                              % [up0; uf0]   nominal inputs
 y0  = eq.y0;                              % nominal Tc
 
-% --- State-feedback + observer design (as before) ---
-
+% State-feedback + observer design
+opts.method = 'place';
 poles_ctrl = [-0.02 -0.03 -0.05 -0.06];   % gentle, well-damped
 poles_obs  = [-0.25 -0.50];
 [K,Ki_vec,~] = design_gains(p, op, poles_ctrl, poles_obs);
@@ -83,7 +83,7 @@ for k = 1:nT
     ydev  = y - y0;           % deviation from nominal
     e     = r_f - y;          % tracking error
 
-    % --- control in deviation coordinates ---
+    %control in deviation coordinates 
 
     % feedforward (2x1) and state-feedback (2x1 on zhat)
     du_ff = Kref*(r_f - y0);           % small-signal DC feedforward
@@ -100,9 +100,9 @@ for k = 1:nT
     u_cmd  = [up_sat; uf_sat];
 
     % apply per-step slew limits to get actual commanded uabs
-    uabs = slew_limit(uabs, u_cmd, du_max);   % uses your helper
+    uabs = slew_limit(uabs, u_cmd, du_max);   % uses helper
 
-    % --- anti-windup on pellet integrator xI (new 8-arg mode) ---
+    % anti-windup on pellet integrator xI
     % tell anti_windup about the pellet channel only
     xI = anti_windup(xI, e, dt, ...
                      u_unsat(1), ...   % pre-sat pellet command

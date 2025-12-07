@@ -1,7 +1,6 @@
 function door_open_test()
 % 2.7.3 — Door-open disturbance at 110°C
-% Uses the SAME controller as profile_tracking (pellets + fan, with
-% anti-windup + slew limits), and compares:
+% Uses the controller and compares:
 %   - closed-loop feedback case
 %   - simple feed-forward bump (no feedback)
 %
@@ -34,7 +33,7 @@ nT = numel(TT);
 
 tau_ref = 100;                         % reference prefilter time constant
 
-% Actuator bounds (match your profile_tracking choices)
+% Actuator bounds
 up_min  = 0;                        % g/s
 up_max  = 2.50;                        % g/s
 uf_min  = 0.0;
@@ -88,7 +87,7 @@ for k = 1:nT
         p_k = p; p_k.kca = alpha_nom * p.kca;
     end
 
-    %% ---------- CLOSED-LOOP FEEDBACK CASE ----------
+    %CLOSED-LOOP FEEDBACK CASE ----------
     % Constant reference r = 110, shaped by first-order prefilter
     r_set   = T_target;
     r_f_fb  = r_f_fb + dt*(r_set - r_f_fb)/tau_ref;
@@ -112,7 +111,7 @@ for k = 1:nT
     u_cmd_fb  = [up_sat_fb; uf_sat_fb];
 
     % Slew limits → actual commanded inputs
-    u_fb = slew_limit(u_fb, u_cmd_fb, du_max); % uses your helper
+    u_fb = slew_limit(u_fb, u_cmd_fb, du_max); % uses helper
 
     % Anti-windup on pellet integrator (8-arg mode)
     xI_fb = anti_windup(xI_fb, e_fb, dt, ...
@@ -133,7 +132,7 @@ for k = 1:nT
     UP_fb(k) = u_fb(1);
     UF_fb(k) = u_fb(2);
 
-    %% ---------- OPEN-LOOP FEED-FORWARD CASE ----------
+    %% OPEN-LOOP FEED-FORWARD CASE
     % Simple pellet "blip" + modest fan bump; no feedback
     if t > t_on && t < t_off
         % ramp pellets up a bit during door open
@@ -163,7 +162,7 @@ fig = figure(3); clf(fig); tiledlayout(fig,2,1);
 
 % Temperature comparison
 nexttile;
-plot(TT, Tc_fb, 'b-', TT, Tc_ff, 'r--', 'LineWidth', 1.2); hold on
+plot(TT, Tc_ff, 'r--', 'LineWidth', 1.2); hold on
 xline(t_on,  '--k', 'Door open');
 xline(t_off, '--k', 'Door shut');
 grid on
@@ -173,7 +172,7 @@ legend('Feedback controller','Feed-forward only','Location','best');
 
 % Pellet input comparison
 nexttile;
-plot(TT, UP_fb, 'b-', TT, UP_ff, 'r--', 'LineWidth', 1.0); hold on
+plot( TT, UP_ff, 'r--', 'LineWidth', 1.0); hold on
 grid on
 ylabel('u_p (g/s)'); xlabel('Time (s)');
 legend('u_p (FB)','u_p (FF)','Location','best');
