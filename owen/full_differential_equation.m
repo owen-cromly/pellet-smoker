@@ -1,4 +1,4 @@
-function x_dot_aug = full_differential_equation(x, system_model, observer_model, feedback_model, setpoint, door_status, lin, p, noise)
+function x_dot_aug = full_differential_equation(x, system_model, observer_model, feedback_model, setpoint, input, door_status, lin, p, noise, precomp)
 % FULL DIFFERENTIAL EQUATION Used to define the full system differential
 % equation of x_aug. This is called usually by run_simulation to define the
 % output of an anonymous function that then gets used in ode45 as part of a
@@ -9,10 +9,12 @@ arguments (Input)
     observer_model
     feedback_model
     setpoint
+    input
     door_status
     lin % linearized model
     p
     noise % amount of measurement noise, normalized to y
+    precomp % whether or not to include a precompensation
 end
 
 arguments (Output)
@@ -35,11 +37,14 @@ feed_struct.x_I = x_I;
 feed_struct.lin = lin;
 feed_struct.setpoint = setpoint;
 feed_struct.y = y;
+feed_struct.input = input;
 % including a callback for open loop (never change this unless you want a
 % different model for open loop or something)
 feed_struct.input_determination_function = @(setpoint) op_point2u(p, setpoint);
+%feed_struct.input_determination_function = @(setpoint) [0.6;0.4];
 
-% Call on the feedback model
+% Call on the feedback model ATTENTION ATTENTION ATTENTION ATTENTION no
+% pre-compensator is being used at the moment!!!!!!!!!!!!!!!!!!!!
 u = saturate(feedback_wrapper(feedback_model, feed_struct)+op_point2u(p,setpoint), [p.u_p_max; p.u_f_max], [p.u_p_min; p.u_f_min]);
 % Call on the nonlinear system model
 x_dot = system_model(door_status, x, u);

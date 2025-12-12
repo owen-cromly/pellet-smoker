@@ -19,6 +19,9 @@ arguments (Output)
     x_I_dot % the predicted x_hat v. setpoint error, to be integrated
 end
 
+% HERE is where the magic happens
+integral_saturation = 0.5; % changed from 1 after submittal of report. Better here
+
 x_hat_dot = [0;0;0]; % no observer! x_hat state not of interest if using
 x_I_dot = saturate(y - setpoint(2), integral_saturation, -integral_saturation);
 

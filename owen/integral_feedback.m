@@ -18,11 +18,11 @@ end
 A2 = lin.A(1:2,1:2);
 B2 = lin.B(1:2,1:2);
 
-k = [place(A2,B2,[-3.8+0.2i; -3.8-0.2i]),[0;0]];
-k = [place(A2,B2,[-0.38+0.002i; -0.38-0.002i]),[0;0]];
+%k = [place(A2,B2,[-3.8+0.2i; -3.8-0.2i]),[0;0]];
+k = [place(A2,B2,[-0.78+0.002i; -0.78-0.002i]),[0;0]];
 %k = [place(A2,B2,[-0.18+0.002i; -0.18-0.002i]),[0;0]];
 
-u = -k*(x_hat-setpoint)    -    [0.01; 0.01]*x_I;
+u = -k*(x_hat-setpoint)    -    [0.1; 0.1]*x_I;
 %u = [max(u_p_min,min(u_p_max,u_unsat(1))); max(u_f_min,min(u_f_max,u_unsat(2)))];
 
 

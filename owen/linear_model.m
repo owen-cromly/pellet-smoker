@@ -1,4 +1,4 @@
-function xd = nonlinear_model(door_open, x, u)
+function xd = linear_model(door_open, x, u)
     %NONLINEAR_MODEL Wrapper function for the nonlinear model
     %   Detailed explanation goes here
     arguments (Input)
@@ -33,10 +33,10 @@ function xd = nonlinear_model(door_open, x, u)
         p.k_ca = 25*1.5;
     end
 
-    xd = nonlinear_core(p, x, u);
+    xd = linear_core(p, x, u);
 end
 
-function xd = nonlinear_core(p, x, u)
+function xd = linear_core(p, x, u)
     %NONLINEAR_SYSTEM Core of the nonlinear model
     %   Detailed explanation goes here
     arguments (Input)
@@ -60,7 +60,7 @@ function xd = nonlinear_core(p, x, u)
     T_amb = p.T_amb;
 
     x_dot_nonlinear = @(x, u) [
-        1/C_f * (  -k_f*(x(1)-x(2)) -k_fa*(x(1)-T_amb) +gamma*u(1)*u(2)  );
+        1/C_f * (  -k_f*(x(1)-x(2)) -k_fa*(x(1)-T_amb) +gamma*(u(1)*0.6+u(2)*0.4)  );
         1/C_c * (   k_f*(x(1)-x(2)) -k_ca*(x(2)-T_amb)  );
         -u(1);
     ];

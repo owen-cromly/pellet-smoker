@@ -18,4 +18,6 @@ u_p = ( p.k_f*(T_f-T_c) + p.k_fa*(T_f-p.T_amb) ) / p.gamma;
 
 u = [u_p; 1];
 
+%u = [0;0];
+
 end
