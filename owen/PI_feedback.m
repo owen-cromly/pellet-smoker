@@ -12,7 +12,7 @@ arguments (Output)
 end
 
 k_P = [
-    200;  % Kp
+    15;  % Kp
     0.2     % Kf
 ];
 
@@ -26,7 +26,6 @@ k_I = [
 
 
 u = k_P.*(ones(2,1)*(setpoint(2)-y)) - k_I*x_I; % subtracting u_op for proper offset
-u(2) = u(2)+1;
 %u = [max(u_p_min,min(u_p_max,u_unsat(1))); max(u_f_min,min(u_f_max,u_unsat(2)))];
 
 end

@@ -14,7 +14,7 @@ arguments (Input)
     lin % linearized model
     p
     noise % amount of measurement noise, normalized to y
-    precomp % whether or not to include a precompensation
+    precomp 
 end
 
 arguments (Output)
@@ -45,7 +45,7 @@ feed_struct.input_determination_function = @(setpoint) op_point2u(p, setpoint);
 
 % Call on the feedback model ATTENTION ATTENTION ATTENTION ATTENTION no
 % pre-compensator is being used at the moment!!!!!!!!!!!!!!!!!!!!
-u = saturate(feedback_wrapper(feedback_model, feed_struct)+op_point2u(p,setpoint), [p.u_p_max; p.u_f_max], [p.u_p_min; p.u_f_min]);
+u = saturate(feedback_wrapper(feedback_model, feed_struct)+precomp(p, setpoint), [p.u_p_max; p.u_f_max], [p.u_p_min; p.u_f_min]);
 % Call on the nonlinear system model
 x_dot = system_model(door_status, x, u);
 

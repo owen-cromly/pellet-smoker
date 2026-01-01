@@ -20,9 +20,9 @@ arguments (Output)
 end
 
 A2 = lin.A(1:2,1:2);
-L = [place(A2, [0;1], [-3.1 -2.9])'; 0]; % arbitrary poles
+%L = [place(A2, [0;1], [-3.1 -2.9])'; 0]; % arbitrary poles
 %L = [place(A2, [0;1], [-1.1 -0.9])'; 0]; % arbitrary poles
-%L = [place(A2, [0;1], [-5.1 -4.9])'; 0]; % arbitrary poles
+L = [place(A2, [0;1], [-5.1 -4.9])'; 0]; % arbitrary poles
 
 % HERE is where the magic happens
 integral_saturation = 1; % changed from 1 after submittal of report. Better here

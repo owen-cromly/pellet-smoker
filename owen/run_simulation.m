@@ -62,7 +62,7 @@ function [t, x_aug, u] = run_simulation(p, sim_params, observer_model, feedback_
     noise = @(t) interp1(noise_times, noise_values, t); % 1000 Hz sampling rate of the measuring device, let's say
 
     % --- Unpack precompensator boolean ---
-    precomp = sim_params.precomp;
+    precomp = @sim_params.precomp;
 
     % --- Set up initial conditions ---
     x_0 = [Tce2Tfe(p, T_c_start); T_c_start; m_p_start];
@@ -77,11 +77,11 @@ function [t, x_aug, u] = run_simulation(p, sim_params, observer_model, feedback_
 
     % --- Solve ODE ---
     [t, x_aug] = ode45(x_dot_aug, t_min:sim_params.time_resolution:t_max, x_aug_0);
-    x_aug = x_aug'; % get x_augs as column vectors
+    x_aug = x_aug.'; % get x_augs as column vectors
 
 
     % --- Recover control inputs ---
     u = recover_u(feedback_model, linspace(t_min,t_max,size(x_aug,2)), ...
-                  x_aug(1:3,:), x_aug(4:6,:), x_aug(7,:), setpoint, input, p, lin, noise);
+                  x_aug(1:3,:), x_aug(4:6,:), x_aug(7,:), setpoint, input, p, lin, noise, precomp);
 
 end

@@ -1,4 +1,4 @@
-function u = recover_u(feedback_model, time_linspace, x, x_hat, x_I, setpoint, input, p, lin, noise)
+function u = recover_u(feedback_model, time_linspace, x, x_hat, x_I, setpoint, input, p, lin, noise, precomp)
 % RECOVER U Gives you the inputs as a timeseries based on your x_hat
 % timeseries
 arguments (Input)
@@ -12,6 +12,7 @@ arguments (Input)
     p
     lin
     noise % function of t
+    precomp
 end
 
 arguments (Output)
@@ -32,7 +33,7 @@ for i=1:size(time_linspace,2)
     feed_struct.setpoint = setpoint_series(:,i);
     feed_struct.input = input_series(:,i);
     feed_struct.input_determination_function = @(setpoint) op_point2u(p, setpoint_series(:,i));
-    u(:,i) = saturate(feedback_wrapper(feedback_model, feed_struct)+op_point2u(p,setpoint_series(:,i)), [p.u_p_max; p.u_f_max], [p.u_p_min; p.u_f_min]);
+    u(:,i) = saturate(feedback_wrapper(feedback_model, feed_struct)+precomp(p,setpoint_series(:,i)), [p.u_p_max; p.u_f_max], [p.u_p_min; p.u_f_min]);
 end
 
 
